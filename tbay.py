@@ -45,19 +45,28 @@ beyonce = User(username="Beyonce", password="Queen B")
 michelle = User(username = "Michelle", password = "Queen M")
 kelly = User(username = "Kelly", password = "Queen K")
 
+misc = Item(name="Filler", description = "Misc item", user = michelle)
 baseball = Item(name = "Destiny's baseball", description = "One badass baseball", user = beyonce)
 
 michelle_bid1 = Bid(price_point = 10.00, user = michelle, item = baseball)
 kelly_bid1 = Bid(price_point = 10.50, user = kelly, item = baseball)
-michelle_bid2 = Bid(price_point = 30.50, user = michelle, item = baseball)
-kelly_bid2 = Bid(price_point = 30.00, user = kelly, item = baseball)
+michelle_bid2 = Bid(price_point = 30.00, user = michelle, item = baseball)
+kelly_bid2 = Bid(price_point = 30.50, user = kelly, item = baseball)
 
-session.add_all([beyonce,michelle,kelly,baseball, michelle_bid1, michelle_bid2, kelly_bid1, kelly_bid2])
+session.add_all([beyonce, michelle, kelly, misc, baseball, michelle_bid1, michelle_bid2, kelly_bid1, kelly_bid2])
 session.commit()
 
-bids = session.query(Bid.id).order_by(Bid.price_point).all()
+target_item = session.query(Item.id).filter(Item.name == "Destiny's baseball").all()
+itemid = target_item[0]
+item = session.query(Item).get(itemid)
+allbids = []
+
+for bid in item.bids:
+    allbids.append(bid.price_point)
+
+bids = sorted(allbids)
 winning_bid= bids[-1:]
-winner = session.query(Bid).get(winning_bid)
+bidid = session.query(Bid.id).filter(Bid.price_point == winning_bid[0]).all()
+winner = session.query(Bid).get(bidid)
 
-print winner.user.username
-
+print "Congratulations! {} won {} with a bid of {}!".format (winner.user.username, item.name, winner.price_point)
