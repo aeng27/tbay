@@ -18,8 +18,8 @@ class Item(Base):
     description = Column(String)
     start_time = Column(DateTime, default=datetime.utcnow)
     
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     bids = relationship("Bid", backref="item")
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     
 class User(Base):
     __tablename__ = "user"
@@ -47,14 +47,19 @@ kelly = User(username = "Kelly", password = "Queen K")
 
 baseball = Item(name = "Destiny's baseball", description = "One badass baseball", user = beyonce)
 
+
 michelle_bid1 = Bid(price_point = 10.00, user = michelle, item = baseball)
 kelly_bid1 = Bid(price_point = 10.50, user = kelly, item = baseball)
-michelle_bid2 = Bid(price_point = 30.00, user = michelle, item = baseball)
-kelly_bid2 = Bid(price_point = 30.50, user = kelly, item = baseball)
+michelle_bid2 = Bid(price_point = 30.50, user = michelle, item = baseball)
+kelly_bid2 = Bid(price_point = 30.00, user = kelly, item = baseball)
 
+session.add_all([beyonce,michelle,kelly,baseball, michelle_bid1, michelle_bid2, kelly_bid1, kelly_bid2])
 session.commit()
 
-users = session.query(User).all()
-items = session.query(Item.name).all()
-bids = session.query(Bid.price_point).order_by(Bid.price_point).all()
-print items
+
+bids = session.query(Bid.id).order_by(Bid.price_point).all()
+winning_bid= bids[-1:]
+winner = session.query(Bid).get(winning_bid)
+
+print winner.user.username
+
