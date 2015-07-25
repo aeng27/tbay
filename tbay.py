@@ -47,7 +47,6 @@ kelly = User(username = "Kelly", password = "Queen K")
 
 baseball = Item(name = "Destiny's baseball", description = "One badass baseball", user = beyonce)
 
-
 michelle_bid1 = Bid(price_point = 10.00, user = michelle, item = baseball)
 kelly_bid1 = Bid(price_point = 10.50, user = kelly, item = baseball)
 michelle_bid2 = Bid(price_point = 30.50, user = michelle, item = baseball)
@@ -55,7 +54,6 @@ kelly_bid2 = Bid(price_point = 30.00, user = kelly, item = baseball)
 
 session.add_all([beyonce,michelle,kelly,baseball, michelle_bid1, michelle_bid2, kelly_bid1, kelly_bid2])
 session.commit()
-
 
 bids = session.query(Bid.id).order_by(Bid.price_point).all()
 winning_bid= bids[-1:]
